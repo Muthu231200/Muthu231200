@@ -1,24 +1,11 @@
 const db = require("../config/db");
 
 // Get Employees
-exports.getEmployees = async (page = 1, limit = 10) => {
-  const offset = (page - 1) * limit;
-  
+exports.getEmployees = async () => {
   const [rows] = await db.query(
-    "SELECT * FROM employees WHERE status != 'D' LIMIT ? OFFSET ?",
-    [limit, offset]
+    "SELECT * FROM employees WHERE status != 'D'"
   );
-  
-  const [countResult] = await db.query(
-    "SELECT COUNT(*) as total FROM employees WHERE status != 'D'"
-  );
-  
-  return {
-    data: rows,
-    total: countResult[0].total,
-    page,
-    limit
-  };
+  return rows;
 };
 
 // Get Employee by ID
