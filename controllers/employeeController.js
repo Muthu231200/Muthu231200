@@ -2,8 +2,21 @@ const employeeModel = require("../models/employeeModel");
 
 exports.getEmployees = async (req, res) => {
   try {
-    const employees = await employeeModel.getEmployees();
-    res.status(200).json({ statusCode: 200, status: "success", data: employees });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    
+    const result = await employeeModel.getEmployees(page, limit);
+    res.status(200).json({ 
+      statusCode: 200, 
+      status: "success", 
+      data: result.data,
+      pagination: {
+        page: result.page,
+        limit: result.limit,
+        total: result.total,
+        totalPages: Math.ceil(result.total / result.limit)
+      }
+    });
   } catch (error) {
     res.status(500).json({ statusCode: 500, status: "error", message: error.message });
   }
